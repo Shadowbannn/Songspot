@@ -7,8 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<!-- Librería para el efecto de confeti -->
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<!-- CDN cdnjs más estable para Vercel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.9.4/confetti.min.js"></script>
 <style>
   :root{
     --bg: #000000;
@@ -463,14 +463,16 @@ function hashStr(s){
   return h;
 }
 
-// Disparar confeti con estilo verde personalizado
+// Disparar confeti garantizado en capas superiores para Vercel
 function launchConfetti(){
   if(typeof confetti === 'function'){
     confetti({
-      particleCount: 80,
+      particleCount: 100,
       spread: 70,
       origin: { y: 0.6 },
-      colors: ['#37e06a', '#ffffff', '#22a84b']
+      colors: ['#37e06a', '#ffffff', '#22a84b'],
+      zIndex: 99999,
+      disableForReducedMotion: false
     });
   }
 }
@@ -863,7 +865,7 @@ function finishRound(isRight, gaveUp){
 
   if(isRight){ 
     totalPoints += POINTS[stageIdx];
-    launchConfetti(); // Lanzar confeti al adivinar
+    launchConfetti();
   }
   totalPointsEl.textContent = totalPoints.toLocaleString('es-UY');
   round++;
