@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Librería para el efecto de confeti -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 <style>
   :root{
     --bg: #000000;
@@ -435,7 +437,6 @@ const ARTIST_IDS = [
   { name: "Underaiki", id: "1482877011" }
 ];
 
-// Nueva escala de segundos
 const STAGES = [2, 5, 10, 15, 20];
 const POINTS = [1000, 750, 500, 250, 100];
 
@@ -460,6 +461,18 @@ function hashStr(s){
   let h = 0;
   for(let i=0;i<s.length;i++){ h = (h*31 + s.charCodeAt(i)) | 0; }
   return h;
+}
+
+// Disparar confeti con estilo verde personalizado
+function launchConfetti(){
+  if(typeof confetti === 'function'){
+    confetti({
+      particleCount: 80,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#37e06a', '#ffffff', '#22a84b']
+    });
+  }
 }
 
 let jsonpCounter = 0;
@@ -848,7 +861,10 @@ function finishRound(isRight, gaveUp){
   playBtn.classList.remove('playing');
   waveEl.classList.remove('playing');
 
-  if(isRight){ totalPoints += POINTS[stageIdx]; }
+  if(isRight){ 
+    totalPoints += POINTS[stageIdx];
+    launchConfetti(); // Lanzar confeti al adivinar
+  }
   totalPointsEl.textContent = totalPoints.toLocaleString('es-UY');
   round++;
 
