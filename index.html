@@ -674,14 +674,24 @@ function renderStagePills(){
     const pill = document.createElement('button');
     pill.className = 'stage-pill';
     pill.textContent = s < 1 ? s + 's' : s + 's';
+    
     if(i < stageIdx) pill.classList.add('done');
     else if(i === stageIdx) pill.classList.add('current');
     else pill.classList.add('locked');
-    pill.disabled = i > stageIdx + 1;
-    pill.addEventListener('click', () => {
-      if(i === stageIdx){ playClip(); }
-      else if(i === stageIdx + 1){ stageIdx = i; updateStageUI(); playClip(); }
+
+    // Manejador único optimizado para móviles y escritorio
+    pill.addEventListener('click', (e) => {
+      e.preventDefault();
+      // Solo permite seleccionar la etapa actual o avanzar a la siguiente
+      if(i === stageIdx){
+        playClip();
+      } else if(i === stageIdx + 1){
+        stageIdx = i;
+        updateStageUI();
+        playClip();
+      }
     });
+
     stagePillsEl.appendChild(pill);
   });
 }
@@ -814,7 +824,8 @@ guessInput.addEventListener('keydown', (e) => {
   }
 });
 
-skipBtn.addEventListener('click', () => {
+skipBtn.addEventListener('click', (e) => {
+  e.preventDefault();
   if(stageIdx < STAGES.length - 1){
     stageIdx++;
     updateStageUI();
