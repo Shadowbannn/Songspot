@@ -34,7 +34,6 @@
   .title-row h1{ font-size: 15px; font-weight: 700; margin:0 0 4px; letter-spacing:0.01em; }
   .title-row p{ font-size: 12px; color: var(--text-dim); margin:0; }
 
-  /* Filtros por Artista, Álbum y Año centrados */
   .filter-section{
     display: flex;
     justify-content: center;
@@ -322,8 +321,8 @@
 <div class="wrap">
 
   <div class="title-row">
-    <h1>Adivina la música</h1>
-    <p>Suei - Underaiki</p>
+    <h1>Adivina la pista</h1>
+    <p>Catálogo completo de Suei y Underaiki</p>
   </div>
 
   <div class="filter-section">
@@ -388,9 +387,9 @@
     </div>
 
     <div class="scale-labels">
-      <span id="scaleMin">0.1s</span>
-      <span class="current" id="scaleCurrent">0.1s</span>
-      <span id="scaleMax">15s</span>
+      <span id="scaleMin">2s</span>
+      <span class="current" id="scaleCurrent">2s</span>
+      <span id="scaleMax">20s</span>
     </div>
 
     <div class="stage-pills" id="stagePills"></div>
@@ -427,7 +426,7 @@
     <audio id="player" preload="none"></audio>
   </div>
 
-  <p class="footnote">© 2026 Sigma Tech - All rights reserved</p>
+  <p class="footnote">Previews de audio vía la API pública de iTunes. Títulos, artistas y portadas pertenecen a Suei y Underaiki — este juego no está afiliado a ellos.</p>
 </div>
 
 <script>
@@ -436,7 +435,8 @@ const ARTIST_IDS = [
   { name: "Underaiki", id: "1482877011" }
 ];
 
-const STAGES = [0.1, 0.5, 2, 5, 15];
+// Nueva escala de segundos
+const STAGES = [2, 5, 10, 15, 20];
 const POINTS = [1000, 750, 500, 250, 100];
 
 function normalize(s){
@@ -673,16 +673,13 @@ function renderStagePills(){
   STAGES.forEach((s, i) => {
     const pill = document.createElement('button');
     pill.className = 'stage-pill';
-    pill.textContent = s < 1 ? s + 's' : s + 's';
-    
+    pill.textContent = s + 's';
     if(i < stageIdx) pill.classList.add('done');
     else if(i === stageIdx) pill.classList.add('current');
     else pill.classList.add('locked');
 
-    // Manejador único optimizado para móviles y escritorio
     pill.addEventListener('click', (e) => {
       e.preventDefault();
-      // Solo permite seleccionar la etapa actual o avanzar a la siguiente
       if(i === stageIdx){
         playClip();
       } else if(i === stageIdx + 1){
@@ -701,8 +698,7 @@ function updateStageUI(){
   playheadEl.style.left = (frac * 100) + '%';
   recolorWave(frac);
   
-  const label = STAGES[stageIdx] < 1 ? (STAGES[stageIdx]*1000)+'ms' : STAGES[stageIdx]+'s';
-  scaleCurrent.textContent = label;
+  scaleCurrent.textContent = STAGES[stageIdx] + 's';
   worthValEl.textContent = POINTS[stageIdx].toLocaleString('es-UY');
   renderStagePills();
 
@@ -732,7 +728,7 @@ function nextSong(){
   currentSong = activePool[idx];
 
   player.src = currentSong.previewUrl;
-  clipStart = Math.random() * 12;
+  clipStart = Math.random() * 8;
   roundValEl.textContent = 'Ronda ' + round;
 
   renderWave(currentSong.title + idx);
